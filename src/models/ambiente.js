@@ -4,7 +4,7 @@ const schema = new mongoose.Schema({
   nome: String,
   celula: [{
     nome: String,
-    recurso: [{
+    recursos: [{
       nome: String,
       conteudo: mongoose.Schema.Types.Mixed
     }]

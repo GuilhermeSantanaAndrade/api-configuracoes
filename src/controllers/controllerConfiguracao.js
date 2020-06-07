@@ -11,46 +11,26 @@ class ControllerConfiguracoes {
   }
 
   async consulta(req, res) {
-    // let { ambiente, celula, nivel } = req.params;
+    // let { ambiente, celula, recurso } = req.params;
 
-    // const configuracoes = await serviceConfiguracao.lista({ celula, nivel });
+    // const configuracoes = await serviceConfiguracao.lista({ celula, recurso });
     // responseSuccess(res, configuracoes);
   }
 
   async inclui(req, res) {
-    // let { ambiente, celula, nivel } = req.params;
-    // let { body } = req.body;
+    let { ambiente, celula, recurso } = req.params;
+    let body = req.body;
 
-    // const configuracoes = await serviceConfiguracao.inclui({ celula, nivel, body });
-    let model = undefined
+    // const configuracoes = await serviceConfiguracao.inclui({ celula, recurso, body });
 
-    const config = await ConfiguracaoModel.find({ nome: "dev" });
+    let [configuracao] = await ConfiguracaoModel.find({ nome: ambiente });
+    let response = undefined;
 
-    if (!config.length) {
-      model = new ConfiguracaoModel();
-      model.nome = "dev";
-      const recurso = [{
-        nome: "api-corretoras",
-        conteudo: {
-          API_PORT: 3002,
-          NODE_ENV: "development",
-          MONGO_HOST: "192.168.99.100",
-          MONGO_PORT: 27017,
-          MONGO_NAME: "qualicorp_configs",
-          MONGO_USER: "admin",
-          MONGO_PASS: "admin"
-        }
-      }];
-      model.celula = [{
-        nome: "celula_digital",
-        recurso: recurso
-      }]
-    } else {
-      [model] = config;
-      model.celula.push({ nome: "qualitech", recurso: [] })
-    };
+    if (configuracao.length === 0)
+      response = await serviceConfiguracao.incluir({ ambiente, celula, recurso, body })
+    else
+      response = await serviceConfiguracao.alterar(configuracao, { ambiente, celula, recurso, body });
 
-    const response = await ConfiguracaoModel.findOneAndUpdate({ nome: "dev" }, model, { upsert: true });
     res.json(response);
   }
 }
