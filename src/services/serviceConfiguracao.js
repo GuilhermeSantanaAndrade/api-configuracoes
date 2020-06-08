@@ -10,7 +10,29 @@ class ServiceConfiguracao {
     let celulaBuscada = configuracao.celula.find(item => item.nome === celula);
 
     if (celulaBuscada) {
+      let idx = celulaBuscada.recursos.findIndex(item => item.nome === recurso);
+      let recursoBuscado = celulaBuscada.recursos[idx];
 
+      if (recursoBuscado) {
+        recursoBuscado.conteudo = {
+          ...recursoBuscado.conteudo,
+          ...body
+        };
+
+        celulaBuscada.recursos[idx] = recursoBuscado
+      } else {
+        const novoRecurso = {
+          nome: recurso,
+          conteudo: {
+            ...body
+          }
+        };
+
+        celulaBuscada.recursos = [...celulaBuscada.recursos, novoRecurso];
+      }
+
+
+      configuracao.celula = celulaBuscada;
     } else {
       let novaCelula = {
         nome: celula,
@@ -26,6 +48,7 @@ class ServiceConfiguracao {
     };
 
     const response = await ConfiguracaoModel.findOneAndUpdate({ nome: ambiente }, configuracao, { upsert: true });
+    return { id: response.id };
   }
 
   async incluir({ ambiente, celula, recurso, body }) {
