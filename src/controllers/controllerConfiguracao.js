@@ -11,17 +11,15 @@ class ControllerConfiguracoes {
   }
 
   async consulta(req, res) {
-    // let { ambiente, celula, recurso } = req.params;
+    let { ambiente, celula, recurso } = req.params;
 
-    // const configuracoes = await serviceConfiguracao.lista({ celula, recurso });
-    // responseSuccess(res, configuracoes);
+    const configuracoes = await serviceConfiguracao.lista({ ambiente, celula, recurso });
+    responseSuccess(res, configuracoes);
   }
 
   async inclui(req, res) {
     let { ambiente, celula, recurso } = req.params;
     let body = req.body;
-
-    // const configuracoes = await serviceConfiguracao.inclui({ celula, recurso, body });
 
     let [configuracao] = await ConfiguracaoModel.find({ nome: ambiente });
     let response = undefined;
