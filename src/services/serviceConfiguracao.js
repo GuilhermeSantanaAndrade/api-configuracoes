@@ -3,7 +3,19 @@ const { AppError } = require("@qualicorp_digital/utils");
 
 class ServiceConfiguracao {
   async lista({ ambiente, celula, recurso }) {
+    let response = [];
+    let [configuracaoBuscada] = await ConfiguracaoModel.find({ nome: ambiente });
+    if (configuracaoBuscada) {
+      let [celulaBuscada] = configuracaoBuscada.celula.find(item => item.nome === celula);
 
+      if (celulaBuscada) {
+        xxx
+
+      }
+
+    }
+
+    return response;
   }
 
   async alterar(configuracao, { ambiente, celula, recurso, body }) {
