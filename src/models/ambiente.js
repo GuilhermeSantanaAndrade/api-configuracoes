@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const schema = new mongoose.Schema({
   nome: String,
@@ -11,4 +11,4 @@ const schema = new mongoose.Schema({
   }]
 })
 
-module.exports = mongoose.model('configuracoes', schema);
+module.exports = mongoose.model("configuracoes", schema)

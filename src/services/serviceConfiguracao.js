@@ -1,35 +1,32 @@
-const ConfiguracaoModel = require("../models/ambiente");
-const { AppError } = require("@qualicorp_digital/utils");
+const ConfiguracaoModel = require("../models/ambiente")
 
 class ServiceConfiguracao {
   async lista({ ambiente, celula, recurso }) {
-    let response = [];
-    let [configuracaoBuscada] = await ConfiguracaoModel.find({ nome: ambiente });
+    const response = []
+    const [configuracaoBuscada] = await ConfiguracaoModel.find({ nome: ambiente })
     if (configuracaoBuscada) {
-      let [celulaBuscada] = configuracaoBuscada.celula.find(item => item.nome === celula);
+      const [celulaBuscada] = configuracaoBuscada.celula.find(item => item.nome === celula)
 
       if (celulaBuscada) {
         xxx
-
       }
-
     }
 
-    return response;
+    return response
   }
 
   async alterar(configuracao, { ambiente, celula, recurso, body }) {
-    let celulaBuscada = configuracao.celula.find(item => item.nome === celula);
+    const celulaBuscada = configuracao.celula.find(item => item.nome === celula)
 
     if (celulaBuscada) {
-      let idx = celulaBuscada.recursos.findIndex(item => item.nome === recurso);
-      let recursoBuscado = celulaBuscada.recursos[idx];
+      const idx = celulaBuscada.recursos.findIndex(item => item.nome === recurso)
+      const recursoBuscado = celulaBuscada.recursos[idx]
 
       if (recursoBuscado) {
         recursoBuscado.conteudo = {
           ...recursoBuscado.conteudo,
           ...body
-        };
+        }
 
         celulaBuscada.recursos[idx] = recursoBuscado
       } else {
@@ -38,15 +35,14 @@ class ServiceConfiguracao {
           conteudo: {
             ...body
           }
-        };
+        }
 
-        celulaBuscada.recursos = [...celulaBuscada.recursos, novoRecurso];
+        celulaBuscada.recursos = [...celulaBuscada.recursos, novoRecurso]
       }
 
-
-      configuracao.celula = celulaBuscada;
+      configuracao.celula = celulaBuscada
     } else {
-      let novaCelula = {
+      const novaCelula = {
         nome: celula,
         recursos: [{
           nome: recurso,
@@ -54,32 +50,31 @@ class ServiceConfiguracao {
             ...body
           }
         }]
-      };
+      }
 
       configuracao.celula = [...configuracao.celula, novaCelula]
     };
 
-    const response = await ConfiguracaoModel.findOneAndUpdate({ nome: ambiente }, configuracao, { upsert: true });
-    return { id: response.id };
+    const response = await ConfiguracaoModel.findOneAndUpdate({ nome: ambiente }, configuracao, { upsert: true })
+    return { id: response.id }
   }
 
   async incluir({ ambiente, celula, recurso, body }) {
-
-    const configuracao = new ConfiguracaoModel();
-    configuracao.nome = ambiente;
+    const configuracao = new ConfiguracaoModel()
+    configuracao.nome = ambiente
     const recursos = [{
       nome: recurso,
       conteudo: {
         ...body
       }
-    }];
+    }]
     configuracao.celula = [{
       nome: celula,
       recursos: recursos
-    }];
+    }]
 
-    const response = await configuracao.save();
+    const response = await configuracao.save()
   }
 }
 
-module.exports = new ServiceConfiguracao();
+module.exports = new ServiceConfiguracao()

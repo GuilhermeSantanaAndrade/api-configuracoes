@@ -1,0 +1,22 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2020": true
+    },
+    "extends": [
+        "standard"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 11
+    },
+    "rules": {
+        "space-before-function-paren": "off",
+        "no-debugger": 0,
+        "no-console": 0,
+        "quotes": [
+            "error",
+            "double"
+        ]
+    }
+}
