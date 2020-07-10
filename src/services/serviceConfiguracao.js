@@ -1,80 +1,93 @@
-const ConfiguracaoModel = require("../models/ambiente")
+const ConfiguracaoModel = require("../models/ambiente");
 
 class ServiceConfiguracao {
   async lista({ ambiente, celula, recurso }) {
-    const response = []
-    const [configuracaoBuscada] = await ConfiguracaoModel.find({ nome: ambiente })
+    const response = [];
+    const [configuracaoBuscada] = await ConfiguracaoModel.find({
+      nome: ambiente,
+    });
     if (configuracaoBuscada) {
-      const [celulaBuscada] = configuracaoBuscada.celula.find(item => item.nome === celula)
+      const [celulaBuscada] = configuracaoBuscada.celula.find(
+        (item) => item.nome === celula
+      );
 
       if (celulaBuscada) {
-        xxx
+        console.log(recurso); // continuar
       }
     }
 
-    return response
+    return response;
   }
 
   async alterar(configuracao, { ambiente, celula, recurso, body }) {
-    const celulaBuscada = configuracao.celula.find(item => item.nome === celula)
+    const celulaBuscada = configuracao.celula.find(
+      (item) => item.nome === celula
+    );
 
     if (celulaBuscada) {
-      const idx = celulaBuscada.recursos.findIndex(item => item.nome === recurso)
-      const recursoBuscado = celulaBuscada.recursos[idx]
+      const idx = celulaBuscada.recursos.findIndex(
+        (item) => item.nome === recurso
+      );
+      const recursoBuscado = celulaBuscada.recursos[idx];
 
       if (recursoBuscado) {
         recursoBuscado.conteudo = {
           ...recursoBuscado.conteudo,
-          ...body
-        }
+          ...body,
+        };
 
-        celulaBuscada.recursos[idx] = recursoBuscado
+        celulaBuscada.recursos[idx] = recursoBuscado;
       } else {
         const novoRecurso = {
           nome: recurso,
-          conteudo: {
-            ...body
-          }
-        }
+          conteudo: { ...body },
+        };
 
-        celulaBuscada.recursos = [...celulaBuscada.recursos, novoRecurso]
+        celulaBuscada.recursos = [...celulaBuscada.recursos, novoRecurso];
       }
 
-      configuracao.celula = celulaBuscada
+      configuracao.celula = celulaBuscada;
     } else {
       const novaCelula = {
         nome: celula,
-        recursos: [{
-          nome: recurso,
-          conteudo: {
-            ...body
-          }
-        }]
-      }
+        recursos: [
+          {
+            nome: recurso,
+            conteudo: { ...body },
+          },
+        ],
+      };
 
-      configuracao.celula = [...configuracao.celula, novaCelula]
-    };
+      configuracao.celula = [...configuracao.celula, novaCelula];
+    }
 
-    const response = await ConfiguracaoModel.findOneAndUpdate({ nome: ambiente }, configuracao, { upsert: true })
-    return { id: response.id }
+    const response = await ConfiguracaoModel.findOneAndUpdate(
+      { nome: ambiente },
+      configuracao,
+      { upsert: true }
+    );
+    return { id: response.id };
   }
 
   async incluir({ ambiente, celula, recurso, body }) {
-    const configuracao = new ConfiguracaoModel()
-    configuracao.nome = ambiente
-    const recursos = [{
-      nome: recurso,
-      conteudo: {
-        ...body
-      }
-    }]
-    configuracao.celula = [{
-      nome: celula,
-      recursos: recursos
-    }]
+    const configuracao = new ConfiguracaoModel();
+    configuracao.nome = ambiente;
+    const recursos = [
+      {
+        nome: recurso,
+        conteudo: { ...body },
+      },
+    ];
+    configuracao.celula = [
+      {
+        nome: celula,
+        recursos,
+      },
+    ];
 
-    const response = await configuracao.save()
+    const response = await configuracao.save();
+    return response;
   }
 }
 
-module.exports = new ServiceConfiguracao()
+module.exports = new ServiceConfiguracao();

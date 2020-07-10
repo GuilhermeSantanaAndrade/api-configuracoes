@@ -1,14 +1,18 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
   nome: String,
-  celula: [{
-    nome: String,
-    recursos: [{
+  celula: [
+    {
       nome: String,
-      conteudo: mongoose.Schema.Types.Mixed
-    }]
-  }]
-})
+      recursos: [
+        {
+          nome: String,
+          conteudo: mongoose.Schema.Types.Mixed,
+        },
+      ],
+    },
+  ],
+});
 
-module.exports = mongoose.model("configuracoes", schema)
+module.exports = mongoose.model("configuracoes", schema);
